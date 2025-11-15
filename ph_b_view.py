@@ -1,30 +1,76 @@
 import time
-import ph_b_model
-import ph_b_controller
 
-contact ={}
+import ph_b_model
+
 
 def welcome():
     print('-' * 25)
     print('Добро пожаловать в лучший телефонный справочник на этом компьютере!')
     menu()
+    return vash_vibor()
+
 
 def bye():
     print('Всего хорошего!\nДо новых встреч!')
 
+
 def no_no():
     print('ваш выбор пока не реализован в справочнике, попробуйте выбрать что-то другое.\n')
-    time.sleep(2)
+    time.sleep(1)
+
+
+def otkaz_izm():
+    print('-' * 25)
+    print('Этого я не смогу сделать. Начинай сначала (ты вышел за рамки дозволенного!)')
+    print('-' * 25)
+    time.sleep(1)
+
 
 def vash_vibor():
     return input('Ваш выбор: ')
 
-def vse_verno():
-    return input("Всё верно? сохраняем? ('Да'=1, 'нет'=0):")
 
-def wrong_vvod():
-    print('некорректный ввод, повторите.')
-    time.sleep(2)
+def chto_ishem():
+    return input('введите строку поиска: ')
+
+
+def ed_item_input():
+    return input('Введите номер найденной записи: ')
+
+
+def net_takogo():
+    print('-' * 25)
+    print('Хммм. нет такого. Если хотите то добавьте')
+    print('-' * 25)
+    time.sleep(1)
+
+
+def vozvrat_g_menu():
+    print('Ну, как знаете...\nТогда возвращаемся в главное меню.')
+    time.sleep(1)
+
+
+def pech_find_number(number:int):
+    print(f'№ найденной записи: {number}')
+
+
+def ask_want_izm():
+    return input("Хотите отредактировать найденную запись? (1 - 'да', 2 - 'нет'): ")
+
+
+def vse_verno():
+    ansver = '!'
+    while ansver:
+        ansver = input("Всё верно? сохраняем? ('Да'=1, 'нет'=0):")
+        if ansver == '1':
+            return True
+        elif ansver == '0':
+            return False
+        else:
+            print('некорректный ввод, повторите.')
+            time.sleep(1)
+    return None
+
 
 def menu():
     print('Пожалуйста, введите номер пункта для выбора операции:')
@@ -34,7 +80,7 @@ def menu():
     print('[3] - Редактировать имеющиеся контакт')
     print('[4] - Найти контакт')
     print('[5] - Удалить контакт')
-    print('[6] - Выход')
+    print('[6] - Выход из телефонного справочника')
     print('-' * 25)
 
 
@@ -44,24 +90,30 @@ def show_all_contacts():
         print('*' * 25)
         print('В справочнике пока пусто! Скорее наполни его!!!')
         print('*' * 25)
+        time.sleep(1)
     else:
-         show_cart(datas)
+        print('*' * 25)
+        show_cart(datas)
 
-    time.sleep(2)
 
-
-def show_cart(datas):
-    for i in datas:
+def show_cart(datas:list|dict):
+    tmp = []
+    if type(datas) is dict:
+        tmp.append(datas)
+    else:
+        tmp = datas
+    for i in tmp:
         print(f'Имя        : {i['Name']}')
         print(f'Фамилия    : {i['Surname']}')
         print(f'Телефон(🔑): {i['Phone']}')
         print(f'Email      : {i['Email']}')
         print(f'Комментарии: {i['Comments']}')
         print('*' * 25)
+        time.sleep(1)
 
 
 def new_contact():
-    data = []
+    contact = dict()
     print('\n')
     print('*' * 25)
     print('Создание нового контакта:\n')
@@ -72,166 +124,78 @@ def new_contact():
     contact['Comments'] = input('Введите комментарии:')
     print('*' * 25)
     print('Вы ввели:\n')
-    data.append(contact)
-    show_cart(data)
-    if ph_b_model.new_contact_add():
-        print('*' * 25)
-        print('Готово!\nВозвращаемся в главное меню...')
-        time.sleep(1)
+    show_cart(contact)
+    if vse_verno():
+        if ph_b_model.new_contact_add(contact):
+            print('*' * 25)
+            print('Готово!\nВозвращаемся в главное меню...')
+            time.sleep(1)
+        else:
+            print('!!!ААА!!!')
+            print('Всё пропало!')
+            print('Контакт с таким номером телефона уже есь в базе!')
+            print('А в нашей базе возможны только уникальные номера телефонов!')
+            print('Никак не могу записать такое, сорри!')
+            time.sleep(1)
     else:
-        print('!!!ААА!!!')
-        print('Всё пропало!')
-        print('Контакт с таким номером телефона уже есь в базе!')
-        print('А в нашей базе возможны только уникальные номера телефонов!')
-        print('Никак не могу записать такое, сорри!')
-        time.sleep(1)
+        vozvrat_g_menu()
 
 
-
-def search_contact():
-    data =[]
-    while True:
-        print('Пожалуйста, введите номер пункта для выбора операции:')
-        print('-' * 25)
-        print('[1] - Поиск по имени')
-        print('[2] - Поиск по фамилии')
-        print('[3] - Поиск по телефону')
-        print('[4] - Поиск по адресу электронной почты')
-        print('[5] - Выход')
-        print('-' * 25)
-
-        vibor = input('Ваш выбор: ')
-        if vibor == '1':
-            sch_field = 'Name'
-        elif vibor == '2':
-            sch_field = 'Surname'
-        elif vibor == '3':
-            sch_field = 'Phone'
-        elif vibor == '4':
-            sch_field = 'Email'
-        elif vibor == '5':
-            return
-        else:
-            print('ваш выбор пока не реализован в справочнике, попробуйте выбрать что-то другое.\n')
-            time.sleep(1)
-            continue
-
-        sch_text = input('введите строку поиска: ')
-        result = ph_b_model.find_one(sch_field, sch_text)
-
-        if not result:
-            print('-' * 25)
-            print('Хммм. нет такого. Если хотите то добавьте')
-            print('-' * 25)
-            time.sleep(1)
-        else:
-            found_ones = []
-
-            for k, i in enumerate(result, 1):
-                contact['Name'] = i['Name']
-                contact['Surname'] = i['Surname']
-                contact['Phone'] = i['Phone']
-                contact['Email'] = i['Email']
-                contact['Comments'] = i['Comments']
-                print(f'№ найденной записи: {k}')
-                found_ones.append((i['ID'], k))
-                data.append(contact)
-                show_cart(data)
-                time.sleep(1)
-
-            while True:
-                vibor = input("Хотите отредактировать найденную запись? (1 - 'да', 2 - 'нет'): ")
-                if vibor == '1':
-                    ed_item_input = int(input('Введите номер найденной записи: '))
-                    if ed_item_input  not in found_ones[0]: #!!!!!!!!
-                        print('-' * 25)
-                        print('Этого я не смогу сделать. Начинай сначала (ты вышел за рамки дозволенного!)')
-                        print('-' * 25)
-                        time.sleep(1)
-                        return
-                    ed_item = next(x[0] for x in found_ones if x[1] == ed_item_input)
-                    edit_contact(ed_item)
-                    break
-                elif vibor == '2':
-                    break
-                else:
-                    print('ваш выбор пока не реализован в справочнике, попробуйте выбрать что-то другое.\n')
-                    time.sleep(1)
+def search_contact_menu():
+    print('Пожалуйста, введите номер пункта для выбора операции:')
+    print('-' * 25)
+    print('[1] - Поиск по имени')
+    print('[2] - Поиск по фамилии')
+    print('[3] - Поиск по телефону')
+    print('[4] - Поиск по адресу электронной почты')
+    print('[5] - Выход в главное меню')
+    print('-' * 25)
 
 
 def select_edit():
     print('-' * 25)
     print('Вообще-то, по хорошему, прежде чем изменять, объект неплохо было бы найти...')
-    edit_item = int(input('Но если вы такой умный, то просто введите ID записи для изменения: '))
-    edit_contact(edit_item)
+    edit_item = input('Но если вы такой умный, то просто введите ID записи для изменения: ')
+    return edit_item
 
 
-def edit_contact(vibor):
-    data =[]
-    print('-' * 25)
-    datas = ph_b_model.file_load()
-    try:
-        ed_item = next(x for x in datas if x['ID'] == vibor)
-    except StopIteration:
-        print('нет такого! не могу редактировать несуществующее!')
-        print('-' * 25)
-        time.sleep(1)
-        return
+def edit_contact_dialog(vibor:dict):
+    contact = dict()
     print('Добро пожаловать в режим редактирования существующих записей!')
     print('\n')
     print('*' * 25)
     print('Редактирование существующего контакта:\n')
-    contact['Name'] = input(f'Имя (сейчас)        : {ed_item['Name']}.  Введите новое имя: ')
-    contact['Surname'] = input(f'Фамилия (сейчас)    : {ed_item['Surname']}.  Введите новую фамилию: ')
-    contact['Phone'] = input(f'Телефон (сейчас)    : {ed_item['Phone']}.  Введите новый телефон: ')
-    contact['Email'] = input(f'Email (сейчас)      : {ed_item['Email']}.  Введите новый Email: ')
-    contact['Comments'] = input(f'Комментарии (сейчас): {ed_item['Comments']}.  Введите новые комментарии: ')
+    contact['Name'] = input(f'Имя (сейчас)        : {vibor['Name']}.  Введите новое имя: ')
+    contact['Surname'] = input(f'Фамилия (сейчас)    : {vibor['Surname']}.  Введите новую фамилию: ')
+    contact['Phone'] = input(f'Телефон (сейчас)    : {vibor['Phone']}.  Введите новый телефон: ')
+    contact['Email'] = input(f'Email (сейчас)      : {vibor['Email']}.  Введите новый Email: ')
+    contact['Comments'] = input(f'Комментарии (сейчас): {vibor['Comments']}.  Введите новые комментарии: ')
     print('*' * 25)
     print('Вы ввели:\n')
-    data.append(contact)
-    show_cart(data)
-
-    while True:
-        ansver = input("Всё верно? сохраняем? ('Да'=1, 'нет'=0):")
-        if ansver == '1':
-            datas = ph_b_model.file_load()
-            temp = next(x for x in datas if x['ID'] == vibor)
-            datas = list(filter(lambda x: not x == temp, datas))
-            datas.append(contact)
-            ph_b_model.file_save(datas)
-            print('*' * 25)
-            print('Готово! Все поменяно!')
-            return
-        elif ansver == '0':
-            return
-        else:
-            print('ваш выбор пока не реализован в справочнике, попробуйте выбрать что-то другое.\n')
-            time.sleep(2)
+    show_cart(contact)
+    contact['ID'] = vibor['ID']
+    if vse_verno():
+        ph_b_model.edit_contact(vibor, contact)
+        print('*' * 25)
+        print('Готово! Все поменяно!')
+        time.sleep(1)
+        return True
+    else:
+        return False
 
 
-def delete_contact():
-    temp = ''
+def select_delete():
     print('-' * 25)
     print('Вообще-то, по хорошему, прежде чем удалять, объект неплохо было бы найти...')
-    del_item = int(input('Но если вы такой умный, то просто введите ID записи для удаления: '))
-    datas = ph_b_model.file_load()
-    if datas == []:
-        print('А удалять-то нечего - всё пусто!')
-        time.sleep(1)
-    else:
-        try:
-            temp = next(x for x in datas if x['ID'] == del_item)
-        except StopIteration:
-            print('нет такого! не могу удалить несуществующее!')
+    del_item = input('Но если вы такой умный, то просто введите ID записи для удаления: ')
+    return del_item
 
-        if not temp:
-            print('нет такого! не могу удалить несуществующее!')
-            time.sleep(1)
-            return
 
-        datas.remove(temp)
-        ph_b_model.file_save(datas)
-        print('*' * 25)
-        print('Всё! Хана! Удалили насмерть!')
-        print('-' * 25)
-        time.sleep(1)
+def delete_contact_dialog():
+    print('*' * 25)
+    print('Всё! Хана! Удалили насмерть!')
+    print('-' * 25)
+    time.sleep(1)
+
+if __name__ == '__main__':
+    print('Запускайте ph_b_controller.py!')
