@@ -23,7 +23,7 @@ def file_prep():
             pass
 
 
-def file_save(context:str):
+def file_save(context:list):
     """
     Функция перезаписывает справочник со всеми изменениями
     :param context: содержит список из словарей с элементами справочника
@@ -97,7 +97,7 @@ def chek_edit_possibility(vibor:int):
     return ed_item
 
 
-def edit_contact(vibor:int, n_contact:dict):
+def edit_contact(vibor:dict, n_contact:dict):
     """
     Функция обновляет поля элемента справочника новыми значениями
     :param vibor: ID элемента для обновления
