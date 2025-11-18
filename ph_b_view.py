@@ -1,7 +1,5 @@
 import time
 
-import ph_b_model
-
 
 def welcome():
     print('-' * 25)
@@ -50,7 +48,7 @@ def vozvrat_g_menu():
     time.sleep(1)
 
 
-def pech_find_number(number:int):
+def pech_find_number(number: int):
     print(f'№ найденной записи: {number}')
 
 
@@ -84,8 +82,9 @@ def menu():
     print('-' * 25)
 
 
-def show_all_contacts():
-    datas = ph_b_model.file_load()
+def show_all_contacts(my_tel_spravochnik):
+    # datas = ph_b_model.file_load()
+    datas = my_tel_spravochnik.file_load()
     if not datas:
         print('*' * 25)
         print('В справочнике пока пусто! Скорее наполни его!!!')
@@ -96,7 +95,7 @@ def show_all_contacts():
         show_cart(datas)
 
 
-def show_cart(datas:list|dict):
+def show_cart(datas: list | dict):
     tmp = []
     if type(datas) is dict:
         tmp.append(datas)
@@ -112,7 +111,7 @@ def show_cart(datas:list|dict):
         time.sleep(1)
 
 
-def new_contact():
+def new_contact(my_tel_spravochnik):
     contact = dict()
     print('\n')
     print('*' * 25)
@@ -126,7 +125,8 @@ def new_contact():
     print('Вы ввели:\n')
     show_cart(contact)
     if vse_verno():
-        if ph_b_model.new_contact_add(contact):
+        # if ph_b_model.new_contact_add(contact):
+        if my_tel_spravochnik.new_contact_add(contact):
             print('*' * 25)
             print('Готово!\nВозвращаемся в главное меню...')
             time.sleep(1)
@@ -159,7 +159,7 @@ def select_edit():
     return edit_item
 
 
-def edit_contact_dialog(vibor:dict):
+def edit_contact_dialog(my_tel_spravochnik, vibor: dict):
     contact = dict()
     print('Добро пожаловать в режим редактирования существующих записей!')
     print('\n')
@@ -175,7 +175,8 @@ def edit_contact_dialog(vibor:dict):
     show_cart(contact)
     contact['ID'] = vibor['ID']
     if vse_verno():
-        ph_b_model.edit_contact(vibor, contact)
+        # ph_b_model.edit_contact(vibor, contact)
+        my_tel_spravochnik.edit_contact(vibor, contact)
         print('*' * 25)
         print('Готово! Все поменяно!')
         time.sleep(1)
@@ -196,6 +197,7 @@ def delete_contact_dialog():
     print('Всё! Хана! Удалили насмерть!')
     print('-' * 25)
     time.sleep(1)
+
 
 if __name__ == '__main__':
     print('Запускайте ph_b_controller.py!')

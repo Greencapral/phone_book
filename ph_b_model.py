@@ -21,8 +21,9 @@ class Contacts:
         self.Email: str
         self.Comments: str
 
+
 class Spravochnik:
-    def __init__(self, filename: str='contact.json'):
+    def __init__(self, filename: str = 'contact.json'):
         self.filename = filename
         try:
             with open(self.filename, 'r'):
@@ -62,11 +63,11 @@ class Spravochnik:
         result = []
         datas = self.file_load()
         for i in datas:
-            if i[field] == value: #надо передавать поле!
+            if i[field] == value:  # надо передавать поле!
                 result.append(i)
         return result
 
-    def new_contact_add(self, n_contact: dict): # надо переделать на элемент класса!
+    def new_contact_add(self, n_contact: dict):  # надо переделать на элемент класса!
         """
         Метод добавляет элемент в переменную-справочник с проверкой на уникальность по номеру телефона
         :param n_contact: словарь который нужно добавить в справочник
@@ -95,12 +96,12 @@ class Spravochnik:
         """
         datas = self.file_load()
         try:
-            ed_item = next(x for x in datas if x.ID == vibor) # проверить!!!
+            ed_item = next(x for x in datas if x['ID'] == vibor)  # проверить!!!
         except StopIteration:
             return False
         return ed_item
 
-    def edit_contact(self, vibor: Contacts, n_contact: Contacts):
+    def edit_contact(self, vibor: dict, n_contact: Contacts):
         """
         Метод обновляет поля элемента справочника новыми значениями
         :param vibor: ID элемента для обновления
@@ -108,12 +109,12 @@ class Spravochnik:
 
         """
         datas = self.file_load()
-        temp = next(x for x in datas if x.ID == vibor.ID) #проверить!
+        temp = next(x for x in datas if x['ID'] == vibor['ID'])  # проверить!
         datas = list(filter(lambda x: not x == temp, datas))
         datas.append(n_contact)
         self.file_save(datas)
 
-    def delete_contact(self, del_item: Contacts):
+    def delete_contact(self, del_item: int):
         """
         Метод удаляет контакт
         :param del_item: элемент, который надо удалить
@@ -124,7 +125,7 @@ class Spravochnik:
             return None
         else:
             try:
-                temp = next(x for x in datas if x.ID == del_item.ID)
+                temp = next(x for x in datas if x['ID'] == del_item)  # need check!
             except StopIteration:
                 return None
         datas.remove(temp)

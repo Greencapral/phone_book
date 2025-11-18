@@ -10,11 +10,12 @@ def main_menu_control(m_vibor: str):
     """
     while m_vibor != '6':
         if m_vibor == '1':
-            ph_b_view.show_all_contacts()
+            ph_b_view.show_all_contacts(my_tel_spravochnik)
         elif m_vibor == '2':
-            ph_b_view.new_contact()
+            ph_b_view.new_contact(my_tel_spravochnik)
         elif m_vibor == '3':
-            edit_contact_control()
+            # edit_contact_control()
+            edit_contact_control(my_tel_spravochnik)
         elif m_vibor == '4':
             search_menu_control()
         elif m_vibor == '5':
@@ -55,7 +56,8 @@ def search_menu_control():
             ph_b_view.no_no()
             ph_b_view.search_contact_menu()
     sch_text = ph_b_view.chto_ishem()
-    result = ph_b_model.find_one(sch_field, sch_text)
+    # result = ph_b_model.find_one(sch_field, sch_text)
+    result = my_tel_spravochnik.find_one(sch_field, sch_text)
     if not result:
         ph_b_view.net_takogo()
         return False
@@ -75,7 +77,7 @@ def search_menu_control():
             ph_b_view.otkaz_izm()
             return None
         ed_item = next(x[0] for x in found_ones if x[1] == ed_item_input)
-        edit_contact_control(ed_item)
+        edit_contact_control(my_tel_spravochnik, ed_item)
     elif m_vibor == '2':
         ph_b_view.vozvrat_g_menu()
     else:
@@ -84,7 +86,7 @@ def search_menu_control():
     return None
 
 
-def edit_contact_control(vibor=0):
+def edit_contact_control(my_tel_spravochnik, vibor=0):
     """
     Функция управления процессом редактирования.
     Редактирует элемент справочника по переданному ID.
@@ -93,18 +95,19 @@ def edit_contact_control(vibor=0):
     :return: при успешном редактировании возвращает Истину, иначе None
     """
     if vibor:
-        rez = ph_b_model.chek_edit_possibility(vibor)
+        # rez = ph_b_model.chek_edit_possibility(vibor)
+        rez = my_tel_spravochnik.chek_edit_possibility(vibor)
         if not rez:
             ph_b_view.net_takogo()
         else:
-            ph_b_view.edit_contact_dialog(rez)
+            ph_b_view.edit_contact_dialog(my_tel_spravochnik, rez)
     else:
         try:
             ed_item_input = int(ph_b_view.select_edit())
         except ValueError:
             ph_b_view.no_no()
             return None
-        edit_contact_control(ed_item_input)
+        edit_contact_control(my_tel_spravochnik, ed_item_input)
     return True
 
 
@@ -117,11 +120,13 @@ def delete_contact_control(vibor=0):
     :return: при успешном удалении возвращает Истину, иначе None
     """
     if vibor:
-        rez = ph_b_model.chek_edit_possibility(vibor)
+        # rez = ph_b_model.chek_edit_possibility(vibor)
+        rez = my_tel_spravochnik.chek_edit_possibility(vibor)
         if not rez:
             ph_b_view.net_takogo()
         else:
-            ph_b_model.delete_contact(rez)
+            # ph_b_model.delete_contact(rez)
+            my_tel_spravochnik.delete_contact(vibor)
             ph_b_view.delete_contact_dialog()
     else:
         try:
@@ -134,5 +139,6 @@ def delete_contact_control(vibor=0):
 
 
 if __name__ == '__main__':
-    ph_b_model.file_prep()
+    my_tel_spravochnik = ph_b_model.Spravochnik()
+    # ph_b_model.file_prep()
     main_menu_control(ph_b_view.welcome())
