@@ -1,8 +1,10 @@
 import json
 from dataclasses import dataclass
 
+
 class TelSpravochnikErrors(Exception):
     pass
+
 
 class SaveFileError(TelSpravochnikErrors):
     def __str__(self):
@@ -23,12 +25,7 @@ class Contacts:
 class Spravochnik:
     def __init__(self, filename: str = 'contact.json'):
         self.filename = filename
-        try:
-            with open(self.filename, 'r'):
-                pass
-        except FileNotFoundError:
-            with open(self.filename, 'w'):
-                pass
+        Spravochnik.file_availability(self.filename)
 
     def file_save(self, context: list):
         """
@@ -102,7 +99,7 @@ class Spravochnik:
             return False
         return ed_item
 
-    def edit_contact(self, vibor: dict, n_contact: Contacts):
+    def edit_contact(self, vibor: dict, n_contact: dict):
         """
         Метод обновляет поля элемента справочника новыми значениями
         :param vibor: ID элемента для обновления
@@ -132,6 +129,15 @@ class Spravochnik:
         datas.remove(temp)
         self.file_save(datas)
         return True
+
+    @staticmethod
+    def file_availability(file: str):
+        try:
+            with open(file, 'r'):
+                pass
+        except FileNotFoundError:
+            with open(file, 'w'):
+                pass
 
 
 if __name__ == '__main__':
