@@ -15,7 +15,6 @@ def main_menu_control(m_vibor: str):
         elif m_vibor == '2':
             ph_b_view.new_contact(my_tel_spravochnik)
         elif m_vibor == '3':
-            # edit_contact_control()
             edit_contact_control(my_tel_spravochnik)
         elif m_vibor == '4':
             search_menu_control()
