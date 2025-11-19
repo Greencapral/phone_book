@@ -1,5 +1,7 @@
 import time
 
+from ph_b_model import Spravochnik
+
 
 def welcome():
     print('-' * 25)
@@ -82,8 +84,7 @@ def menu():
     print('-' * 25)
 
 
-def show_all_contacts(my_tel_spravochnik):
-    # datas = ph_b_model.file_load()
+def show_all_contacts(my_tel_spravochnik: Spravochnik):
     datas = my_tel_spravochnik.file_load()
     if not datas:
         print('*' * 25)
@@ -111,7 +112,7 @@ def show_cart(datas: list | dict):
         time.sleep(1)
 
 
-def new_contact(my_tel_spravochnik):
+def new_contact(my_tel_spravochnik: Spravochnik):
     contact = dict()
     print('\n')
     print('*' * 25)
@@ -125,7 +126,6 @@ def new_contact(my_tel_spravochnik):
     print('Вы ввели:\n')
     show_cart(contact)
     if vse_verno():
-        # if ph_b_model.new_contact_add(contact):
         if my_tel_spravochnik.new_contact_add(contact):
             print('*' * 25)
             print('Готово!\nВозвращаемся в главное меню...')
@@ -159,7 +159,7 @@ def select_edit():
     return edit_item
 
 
-def edit_contact_dialog(my_tel_spravochnik, vibor: dict):
+def edit_contact_dialog(my_tel_spravochnik: Spravochnik, vibor: dict):
     contact = dict()
     print('Добро пожаловать в режим редактирования существующих записей!')
     print('\n')
@@ -175,7 +175,6 @@ def edit_contact_dialog(my_tel_spravochnik, vibor: dict):
     show_cart(contact)
     contact['ID'] = vibor['ID']
     if vse_verno():
-        # ph_b_model.edit_contact(vibor, contact)
         my_tel_spravochnik.edit_contact(vibor, contact)
         print('*' * 25)
         print('Готово! Все поменяно!')

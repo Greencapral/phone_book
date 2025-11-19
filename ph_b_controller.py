@@ -1,5 +1,6 @@
 import ph_b_model
 import ph_b_view
+from ph_b_model import Spravochnik
 
 
 def main_menu_control(m_vibor: str):
@@ -56,7 +57,6 @@ def search_menu_control():
             ph_b_view.no_no()
             ph_b_view.search_contact_menu()
     sch_text = ph_b_view.chto_ishem()
-    # result = ph_b_model.find_one(sch_field, sch_text)
     result = my_tel_spravochnik.find_one(sch_field, sch_text)
     if not result:
         ph_b_view.net_takogo()
@@ -73,7 +73,7 @@ def search_menu_control():
         except ValueError:
             ph_b_view.no_no()
             return None
-        if ed_item_input not in found_ones[0]:  # !!!!!!!!
+        if ed_item_input not in found_ones[0]:
             ph_b_view.otkaz_izm()
             return None
         ed_item = next(x[0] for x in found_ones if x[1] == ed_item_input)
@@ -86,28 +86,28 @@ def search_menu_control():
     return None
 
 
-def edit_contact_control(my_tel_spravochnik, vibor=0):
+def edit_contact_control(my_t_spravochnik: Spravochnik, vibor=0):
     """
     Функция управления процессом редактирования.
     Редактирует элемент справочника по переданному ID.
     Если ID не передавалось, инициирует запрос ID для редактирования через рекурсию.
+    :param my_t_spravochnik: Объект-справочник с которым работаем
     :param vibor: ID элемента справочника для редактирования
     :return: при успешном редактировании возвращает Истину, иначе None
     """
     if vibor:
-        # rez = ph_b_model.chek_edit_possibility(vibor)
-        rez = my_tel_spravochnik.chek_edit_possibility(vibor)
+        rez = my_t_spravochnik.chek_edit_possibility(vibor)
         if not rez:
             ph_b_view.net_takogo()
         else:
-            ph_b_view.edit_contact_dialog(my_tel_spravochnik, rez)
+            ph_b_view.edit_contact_dialog(my_t_spravochnik, rez)
     else:
         try:
             ed_item_input = int(ph_b_view.select_edit())
         except ValueError:
             ph_b_view.no_no()
             return None
-        edit_contact_control(my_tel_spravochnik, ed_item_input)
+        edit_contact_control(my_t_spravochnik, ed_item_input)
     return True
 
 
@@ -120,12 +120,10 @@ def delete_contact_control(vibor=0):
     :return: при успешном удалении возвращает Истину, иначе None
     """
     if vibor:
-        # rez = ph_b_model.chek_edit_possibility(vibor)
         rez = my_tel_spravochnik.chek_edit_possibility(vibor)
         if not rez:
             ph_b_view.net_takogo()
         else:
-            # ph_b_model.delete_contact(rez)
             my_tel_spravochnik.delete_contact(vibor)
             ph_b_view.delete_contact_dialog()
     else:
@@ -140,5 +138,4 @@ def delete_contact_control(vibor=0):
 
 if __name__ == '__main__':
     my_tel_spravochnik = ph_b_model.Spravochnik()
-    # ph_b_model.file_prep()
     main_menu_control(ph_b_view.welcome())
