@@ -7,6 +7,7 @@ def main_menu_control(m_vibor: str):
     """
     Функция управления главным меню
     :param m_vibor: содержит введенное значение для выбора поведения
+    :return: возвращает 1 если все прошло штатно
 
     """
     while m_vibor != '6':
@@ -27,6 +28,7 @@ def main_menu_control(m_vibor: str):
         m_vibor = ph_b_view.vash_vibor()
     else:
         ph_b_view.bye()
+    return 1
 
 
 def search_menu_control():
