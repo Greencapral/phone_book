@@ -36,6 +36,7 @@ class Spravochnik:
         with open(self.filename, 'w') as fl:
             try:
                 json.dump(context, fl)
+                return True
             except:
                 raise SaveFileError
 
@@ -134,10 +135,10 @@ class Spravochnik:
     def file_availability(file: str):
         try:
             with open(file, 'r'):
-                pass
+                return 'r'
         except FileNotFoundError:
             with open(file, 'w'):
-                pass
+                return 'w'
 
 
 if __name__ == '__main__':
