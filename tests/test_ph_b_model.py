@@ -1,55 +1,77 @@
 from os import remove
-
+import pytest
 import ph_b_model
+from copy import deepcopy
 
-test_record = [
-    {"Name": "Test",
-     "Surname": "STest",
-     "Phone": "123",
-     "Email": "a@a.com",
-     "Comments": "!test!",
-     "ID": 99},
+
+@pytest.fixture
+def example_spravochnik():
+    return ph_b_model.Spravochnik('test.json')
+
+
+@pytest.fixture
+def example_record():
+    return [
+        {"Name": "Test",
+         "Surname": "STest",
+         "Phone": "123",
+         "Email": "a@a.com",
+         "Comments": "!test!",
+         "ID": 99},
     ]
 
 
-def test_record_creation(needed_id: int):
-    test_record = ph_b_model.Contacts()
-    test_record.ID = needed_id
-    test_record.Name = "Test Name"
-    test_record.surname = "Test SurName"
-    test_record.phone = "987654321"
-    test_record.Email = "test@test.com"
-    test_record.comment = "test comment"
-    return test_record
+def test_spr_file_safe(example_spravochnik, example_record):
+    assert example_spravochnik.file_save(example_record) == True
+    remove(example_spravochnik.filename)
 
 
-def test_spr_file_safe():
-    global test_record
-    my_tel_spravochnik = ph_b_model.Spravochnik('test.json')
-    assert my_tel_spravochnik.file_save(test_record) == True
-    remove(my_tel_spravochnik.filename)
+def test_spr_file_load(example_spravochnik):
+    assert isinstance(example_spravochnik.file_load(), list)
+    remove(example_spravochnik.filename)
 
 
-def test_spr_file_load():
-    my_tel_spravochnik = ph_b_model.Spravochnik('test.json')
-    assert isinstance(my_tel_spravochnik.file_load(), list)
-    remove(my_tel_spravochnik.filename)
-
-
-def test_spr_find_one():
-    global test_record
-    my_tel_spravochnik = ph_b_model.Spravochnik('test.json')
-    my_tel_spravochnik.file_save(test_record)
+def test_spr_find_one(example_spravochnik, example_record):
+    example_spravochnik.file_save(example_record)
     name = 'Test'
     email = 'a@a.com'
-    assert my_tel_spravochnik.find_one('Name', name)[0]['Name'] == name
-    assert my_tel_spravochnik.find_one('Email', email)[0]['Email'] == email
-    remove(my_tel_spravochnik.filename)
+    assert example_spravochnik.find_one('Name', name)[0]['Name'] == name
+    assert example_spravochnik.find_one('Email', email)[0]['Email'] == email
+    remove(example_spravochnik.filename)
 
-def test_file_availability():
-    test_file = 'test.test'
-    assert ph_b_model.Spravochnik.file_availability(test_file) == 'w'
+
+def test_new_contact_add(example_spravochnik, example_record):
+    example_spravochnik.file_save(example_record)
+    surname = 'STest'
+    phone = '123'
+    assert example_spravochnik.find_one('Surname', surname)[0]['Surname'] == surname
+    assert example_spravochnik.find_one('Phone', phone)[0]['Phone'] == phone
+    remove(example_spravochnik.filename)
+
+
+def test_chek_edit_possibility(example_spravochnik, example_record):
+    example_spravochnik.file_save(example_record)
+    result = example_spravochnik.chek_edit_possibility(example_record[0]['ID'])
+    assert result['Comments'] == '!test!'
+    remove(example_spravochnik.filename)
+
+
+def test_edit_contact(example_spravochnik, example_record):
+    example_spravochnik.file_save(example_record)
+    new_one = deepcopy(example_record)
+    new_one[0]['Phone'] = '987654'
+    example_spravochnik.edit_contact(example_record[0], new_one[0])
+    assert example_spravochnik.find_one('Name', example_record[0]['Name'])[0]['Phone'] == new_one[0]['Phone']
+    remove(example_spravochnik.filename)
+
+
+def test_delete_contact(example_spravochnik, example_record):
+    example_spravochnik.file_save(example_record)
+    assert example_spravochnik.delete_contact(example_record[0]['ID']) == True
+    remove(example_spravochnik.filename)
+
+
+def test_file_availability(example_spravochnik):
+    test_file = 'test.json'
+    assert example_spravochnik.file_availability(test_file) == 'r'
     remove(test_file)
-
-
-

@@ -103,7 +103,7 @@ class Spravochnik:
     def edit_contact(self, vibor: dict, n_contact: dict):
         """
         Метод обновляет поля элемента справочника новыми значениями
-        :param vibor: ID элемента для обновления
+        :param vibor: элемент для обновления
         :param n_contact: новое состояние элемента, которое нужно записать под указанным ID
 
         """
