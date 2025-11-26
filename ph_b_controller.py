@@ -34,7 +34,7 @@ def main_menu_control(m_vibor: str):
 def search_menu_control():
     """
     Функция управления меню поиска
-    :return: ничего не возвращает. Возвраты используются для прерывания выполнения функции
+    :return: возвращает поле для поиска или False если выходим без изменений
     """
     found_ones = []
     sch_field = ''
@@ -73,10 +73,10 @@ def search_menu_control():
             ed_item_input = int(ph_b_view.ed_item_input())
         except ValueError:
             ph_b_view.no_no()
-            return None
+            return False
         if ed_item_input not in found_ones[0]:
             ph_b_view.otkaz_izm()
-            return None
+            return False
         ed_item = next(x[0] for x in found_ones if x[1] == ed_item_input)
         edit_contact_control(my_tel_spravochnik, ed_item)
     elif m_vibor == '2':
@@ -84,7 +84,7 @@ def search_menu_control():
     else:
         ph_b_view.no_no()
 
-    return None
+    return sch_field
 
 
 def edit_contact_control(my_t_spravochnik: Spravochnik, vibor=0):
